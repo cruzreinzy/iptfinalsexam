@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+    <form method="post">
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" id="email">
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" name="password" id="password">
+        </div>
+        <button id="login" type="button">Log in</button>
+    </form>
+    <script>
+        // Verifying token
+
+        const token = localStorage.getItem('token');
+
+        if (token != null) {
+            window.location.href = "records.html"
+        }
+
+        document.querySelector('#login').addEventListener('click', function(e) {
+            const email = document.querySelector('#email').value
+            const password = document.querySelector('#password').value
+
+            const newform = new FormData();
+
+            newform.append('email', email)
+            newform.append('password', password)
+
+            fetch('http://localhost:8000/api/login', {
+                method: "POST",
+                body: newform
+            }).then(response => {
+                return response.json()
+            }).then(data => {
+                if (data.token == undefined) {
+                    alert(data.message)
+                } else {
+                    localStorage.setItem('token', data.token)
+                    window.location.href = "records.html"
+                }
+            })
+        })
+    </script>
+</body>
+</html>
